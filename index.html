@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>อัปโหลดไฟล์ Demand List</title>
+  <link rel="stylesheet" href="decoration.css" />
+</head>
+<body>
+  <div class="upload-container">
+    <h1>อัปโหลดไฟล์ <strong>Demand List</strong></h1>
+    <p>คลิกหรือลากไฟล์มาที่นี่เพื่อเลือกไฟล์</p>
+    
+    <label for="fileUpload" class="file-label">เลือกไฟล์</label>
+    <input type="file" id="fileUpload" name="fileUpload" accept=".xlsx, .xls" />
+    
+    <p id="fileName" class="file-name"></p>
+    <p id="message" class="message"></p>
+    
+    <button id="uploadBtn" class="upload-btn" disabled>อัปโหลด</button>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('fileUpload');
+    const fileName = document.getElementById('fileName');
+    const message = document.getElementById('message');
+    const uploadBtn = document.getElementById('uploadBtn');
+
+    fileInput.addEventListener('change', () => {
+      message.textContent = '';
+      message.className = 'message';
+      const file = fileInput.files[0];
+      if (file) {
+        fileName.textContent = file.name;
+        // เช็คชนิดไฟล์
+        const allowedExt = ['xlsx', 'xls'];
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (allowedExt.includes(ext)) {
+          uploadBtn.disabled = false;
+        } else {
+          message.textContent = 'ไฟล์ต้องเป็น .xls หรือ .xlsx เท่านั้น';
+          message.className = 'message error';
+          uploadBtn.disabled = true;
+          fileName.textContent = '';
+        }
+      } else {
+        fileName.textContent = '';
+        uploadBtn.disabled = true;
+      }
+    });
+
+    uploadBtn.addEventListener('click', () => {
+      if (!fileInput.files.length) {
+        message.textContent = 'โปรดเลือกไฟล์ก่อนอัปโหลด';
+        message.className = 'message error';
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      message.textContent = 'กำลังอัปโหลด...';
+      message.className = 'message';
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      fetch('http://localhost:8000/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('เกิดข้อผิดพลาดขณะอัปโหลด');
+        return response.blob();
+      })
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'result.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        message.textContent = 'ดาวน์โหลดไฟล์เรียบร้อยแล้ว';
+        message.className = 'message success';
+      })
+      .catch(err => {
+        message.textContent = 'Error: ' + err.message;
+        message.className = 'message error';
+      })
+      .finally(() => {
+        uploadBtn.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>

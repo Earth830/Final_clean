@@ -1,0 +1,70 @@
+body {
+  font-family: 'Prompt', sans-serif;
+  background: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.upload-container {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+}
+
+.upload-container h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #222;
+}
+
+.upload-container p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 28px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+label.file-label {
+  display: inline-block;
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+label.file-label:hover {
+  background-color: #1e40af;
+}
+
+.file-name {
+  margin-top: 16px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.message {
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.message.success {
+  color: #16a34a;
+}
+
+.message.error {
+  color: #dc2626;
+}
